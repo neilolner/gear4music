@@ -7,6 +7,8 @@ namespace Gear4music;
 /**
  * Product data as it would come from the database (via joins) inc translations, currencies and
  * the countries it may not be sold in.
+ *
+ * 2022: each condition is a Product
  */
 class Product
 {
@@ -26,6 +28,8 @@ class Product
         public int $boxVolume,
         public int $stockLevel,
         public int $daysToDeliver,
+        public Condition $condition = Condition::New,
+        public bool $isDigital = false,
     ) {
     }
 

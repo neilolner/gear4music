@@ -7,7 +7,8 @@ namespace Gear4music;
 /**
  * Inventory item in a Market.
  *
- * getCurrency() added.
+ * getCurrency() added
+ * 2022 - getCondition() and isDigital added
  */
 interface InventoryInterface
 {
@@ -18,6 +19,8 @@ interface InventoryInterface
     public function isAvailable(): bool;
     public function getWeight(): int;
     public function getBoxVolume(): int;
-    public function getDaysToDeliver(): int;
+    public function getDaysToDeliver(): ?int;
     public function getStockLevel(): int;
+    public function getCondition(): Condition;
+    public function isDigital(): bool;
 }

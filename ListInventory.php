@@ -11,6 +11,7 @@ declare(strict_types=1);
 use Gear4music\Market;
 use Gear4music\Product;
 use Gear4music\ProductIndexer;
+use Gear4music\Condition;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -54,6 +55,39 @@ $indexer = new ProductIndexer([
         stockLevel: 3,
         daysToDeliver: 4,
     ),
+    new Product(
+        sku: 'GUITAR-USED',
+        names: ['en' => 'Guitar', 'de' => 'Guitar de', 'fr' => 'Guitar fr'],
+        prices: ['GBP' => 129.00, 'EUR' => 149.00],
+        hiddenCountries: [],
+        weight: 3500,
+        boxVolume: 120000,
+        stockLevel: 1,
+        daysToDeliver: 2,
+        condition: Condition::Used,
+    ),
+    new Product(
+        sku: 'KEYBD-REFURB',
+        names: ['en' => 'Piano', 'fr' => 'Piano fr'],
+        prices: ['GBP' => 399.00, 'EUR' => 459.00],
+        hiddenCountries: ['DE'],
+        weight: 18000,
+        boxVolume: 450000,
+        stockLevel: 0,
+        daysToDeliver: 3,
+        condition: Condition::Refurbished,
+    ),
+    new Product(
+        sku: 'SW1',
+        names: ['en' => 'Studio software', 'de' => 'Studio software de'],
+        prices: ['GBP' => 99.00, 'EUR' => 119.00, 'SEK' => 1190.00],
+        hiddenCountries: ['FR'], // licence doesn't cover FR
+        weight: 0,
+        boxVolume: 0,
+        stockLevel: 0, // not tracked for downloads
+        daysToDeliver: 0,
+        isDigital: true,
+    ),
 ]);
 
 
@@ -66,14 +100,20 @@ foreach ($markets as $market) {
     }
 
     foreach ($inventory as $item) {
+        $days = $item->getDaysToDeliver();
         printf(
-            "  %-9s %-20s %10s %s  %s, %d days\n",
+            "  %-12s %-20s %-11s %10s %s  %s\n",
             $item->getSku(),
             $item->getName(),
+            $item->isDigital() ? 'digital' : $item->getCondition()->value,
             number_format($item->getPrice(), 2), // assume 2 dec.pl
             $item->getCurrency(),
-            $item->isAvailable() ? "{$item->getStockLevel()} in stock" : 'out of stock',
-            $item->getDaysToDeliver(),
+            match (true) {
+                $item->isDigital() => 'instant download',
+                $days === null => 'out of stock, no restock date',
+                $item->isAvailable() => "{$item->getStockLevel()} in stock, {$days} days",
+                default => "out of stock, {$days} days",
+            },
         );
     }
     echo "\n";
