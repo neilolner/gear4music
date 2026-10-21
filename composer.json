@@ -5,7 +5,8 @@
     },
     "require-dev": {
         "phpstan/phpstan": "^2.1",
-        "squizlabs/php_codesniffer": "^3"
+        "squizlabs/php_codesniffer": "^3",
+        "phpunit/phpunit": "^11"
     },
     "autoload": {
         "psr-4": {
@@ -19,11 +20,13 @@
     },
     "scripts": {
         "analyse": "phpstan analyse --no-progress",
-        "cs": "phpcs --standard=PSR12 src ListInventory.php",
-        "cs-fix": "phpcbf --standard=PSR12 src ListInventory.php",
+        "cs": "phpcs --standard=PSR12 src tests ListInventory.php",
+        "cs-fix": "phpcbf --standard=PSR12 src tests ListInventory.php",
         "check": [
             "@cs",
-            "@analyse"
-        ]
+            "@analyse",
+            "@test"
+        ],
+        "test": "phpunit"
     }
 }

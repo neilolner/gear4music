@@ -4,7 +4,8 @@ Install and run
 
 ```bash
 composer install
-composer check             # code style (PSR-12) + PHPStan (level max)
+composer check             # code style (PSR-12) + PHPStan (level max) + tests
+composer test              # PHPUnit only
 composer cs-fix            # fix code style
 php ListInventory.php
 ```
