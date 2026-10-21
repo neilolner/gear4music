@@ -3,15 +3,17 @@
 /**
  * Lists the inventory each market would see, from sample data.
  *
- *   php list-inventory.php
+ *   php ListInventory.php
  */
 
 declare(strict_types=1);
 
+use Gear4music\ArrayRepository;
+use Gear4music\Condition;
+use Gear4music\InventoryPrinter;
 use Gear4music\Market;
 use Gear4music\Product;
 use Gear4music\ProductIndexer;
-use Gear4music\Condition;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -24,7 +26,7 @@ $markets = [
     new Market('CH', 'fr', 'CHF'),
 ];
 
-$indexer = new ProductIndexer([
+$repository = new ArrayRepository([
     new Product(
         sku: 'GUITAR',
         names: ['en' => 'Guitar', 'de' => 'Guitar de', 'fr' => 'Guitar fr'],
@@ -90,31 +92,4 @@ $indexer = new ProductIndexer([
     ),
 ]);
 
-
-foreach ($markets as $market) {
-    echo "{$market->country}, {$market->language}, {$market->currency}\n";
-
-    $inventory = $indexer->getInventory($market);
-    if ($inventory === []) {
-        echo "  (no current stock)\n";
-    }
-
-    foreach ($inventory as $item) {
-        $days = $item->getDaysToDeliver();
-        printf(
-            "  %-12s %-20s %-11s %10s %s  %s\n",
-            $item->getSku(),
-            $item->getName(),
-            $item->isDigital() ? 'digital' : $item->getCondition()->value,
-            number_format($item->getPrice(), 2), // assume 2 dec.pl
-            $item->getCurrency(),
-            match (true) {
-                $item->isDigital() => 'instant download',
-                $days === null => 'out of stock, no restock date',
-                $item->isAvailable() => "{$item->getStockLevel()} in stock, {$days} days",
-                default => "out of stock, {$days} days",
-            },
-        );
-    }
-    echo "\n";
-}
+(new InventoryPrinter(new ProductIndexer($repository)))->print($markets);

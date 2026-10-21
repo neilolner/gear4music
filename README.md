@@ -7,7 +7,9 @@ composer install
 composer check             # code style (PSR-12) + PHPStan (level max) + tests
 composer test              # PHPUnit only
 composer cs-fix            # fix code style
-php ListInventory.php
+php ListInventory.php      # products from ArrayRepository
+composer db                # (re)create database/inventory.sqlite from database/inventory.sql
+php ListInventoryDb.php    # same products from SqliteRepository
 ```
 
 Notes
@@ -22,3 +24,7 @@ Notes
 8. Digital products and condition added as fields on Product - new Product for each condition (maybe ProductVariant later?). Simple approach does duplicate data
 9. Digital products never out of stock. Used or refurbished shown as no restock date once sold
 10. Tests/TDD. Initially based on data in ListInventory
+
+Addded 21 Oct - missing tests and alternate implementation using sqlite - used Claude with the following prompt:
+
+add a RepositoryInterface and ArrayRepository for current implementation . Then create a sqllite db with products table and 1:M relationships to  product_names,product_prices and product_visibilities, and an alternate SqliteRepository implementation  and a new ListInventoryDb script to exercise it. Seed sqlite tables with original data from ListInventory so both script should return exactly the same, from different sources. Minimal code, no extra bells and whistles

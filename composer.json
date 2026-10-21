@@ -20,13 +20,14 @@
     },
     "scripts": {
         "analyse": "phpstan analyse --no-progress",
-        "cs": "phpcs --standard=PSR12 src tests ListInventory.php",
-        "cs-fix": "phpcbf --standard=PSR12 src tests ListInventory.php",
+        "cs": "phpcs --standard=PSR12 src tests ListInventory.php ListInventoryDb.php",
+        "cs-fix": "phpcbf --standard=PSR12 src tests ListInventory.php ListInventoryDb.php",
         "check": [
             "@cs",
             "@analyse",
             "@test"
         ],
-        "test": "phpunit"
+        "test": "phpunit",
+        "db": "rm -f database/inventory.sqlite && php -r \"(new PDO('sqlite:database/inventory.sqlite'))->exec(file_get_contents('database/inventory.sql'));\""
     }
 }

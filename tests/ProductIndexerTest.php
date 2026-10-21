@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Gear4music\ArrayRepository;
 use Gear4music\Market;
 use Gear4music\Product;
 use Gear4music\ProductIndexer;
@@ -24,7 +25,7 @@ class ProductIndexerTest extends TestCase
             daysToDeliver: 2,
         );
 
-        $indexer = new ProductIndexer([$guitar]);
+        $indexer = new ProductIndexer(new ArrayRepository([$guitar]));
 
         self::assertCount(1, $indexer->getInventory(new Market('GB', 'en', 'GBP')));
         self::assertCount(0, $indexer->getInventory(new Market('FR', 'fr', 'EUR')));
@@ -43,7 +44,7 @@ class ProductIndexerTest extends TestCase
             daysToDeliver: 2,
         );
 
-        $indexer = new ProductIndexer([$guitar]);
+        $indexer = new ProductIndexer(new ArrayRepository([$guitar]));
 
         self::assertCount(0, $indexer->getInventory(new Market('CH', 'it', 'CHF')));
     }
@@ -61,7 +62,7 @@ class ProductIndexerTest extends TestCase
             daysToDeliver: 2,
         );
 
-        $indexer = new ProductIndexer([$guitar]);
+        $indexer = new ProductIndexer(new ArrayRepository([$guitar]));
 
         $gb = $indexer->getInventory(new Market('GB', 'en', 'GBP'))[0];
         $de = $indexer->getInventory(new Market('DE', 'de', 'EUR'))[0];

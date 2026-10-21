@@ -6,10 +6,7 @@ namespace Gear4music;
 
 class ProductIndexer
 {
-    /**
-     * @param list<Product> $products stand-in for the database; inject a repository in real code
-     */
-    public function __construct(private readonly array $products)
+    public function __construct(private readonly RepositoryInterface $repository)
     {
     }
 
@@ -19,7 +16,7 @@ class ProductIndexer
     public function getInventory(Market $market): array
     {
         $inventory = [];
-        foreach ($this->products as $product) {
+        foreach ($this->repository->all() as $product) {
             if ($product->isVisibleIn($market)) {
                 $inventory[] = $product->forMarket($market);
             }
